@@ -324,7 +324,7 @@ if __name__ == "__main__":
     video_content = video_parser.parse_videos()
 
     # output to stdout
-    print(video_content)
+    print("Stout_Output: " + video_content)
 
     # update the readme file
     if args.output_only == "false":
