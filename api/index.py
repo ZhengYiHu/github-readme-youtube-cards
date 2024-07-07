@@ -6,10 +6,7 @@ from flask.wrappers import Response
 
 from .utils import (
     data_uri_from_file,
-    data_uri_from_url,
     estimate_duration_width,
-    fetch_views,
-    format_relative_time,
     is_rtl,
     is_rtl_title,
     seconds_to_duration,
@@ -20,7 +17,6 @@ from .validate import (
     validate_int,
     validate_lang,
     validate_string,
-    validate_video_id,
 )
 
 app = Flask(__name__)
@@ -35,7 +31,6 @@ def render():
         if "id" not in request.args:
             now = datetime.utcnow()
             return Response(response=render_template("index.html", now=now))
-        video_id = validate_video_id(request, "id")
         width = validate_int(request, "width", default=250)
         border_radius = validate_int(request, "border_radius", default=5)
         background_color = validate_color(request, "background_color", default="#0d1117")
@@ -44,13 +39,9 @@ def render():
         title = validate_string(request, "title", default="")
         max_title_lines = validate_int(request, "max_title_lines", default=1)
         title_lines = trim_lines(title, (width - 20) // 8, max_title_lines)
-        publish_timestamp = validate_int(request, "timestamp", default=0)
         duration_seconds = validate_int(request, "duration", default=0)
         lang = validate_lang(request, "lang", default="en")
-        thumbnail = data_uri_from_url(f"https://i.ytimg.com/vi/{video_id}/mqdefault.jpg")
-        views = fetch_views(video_id, lang)
-        diff = format_relative_time(publish_timestamp, lang) if publish_timestamp else ""
-        stats = f"{views}\u2002•\u2002{diff}" if views and diff else (views or diff)
+        thumbnail = request.args.get("image")
         duration = seconds_to_duration(duration_seconds)
         duration_width = estimate_duration_width(duration)
         thumbnail_height = round(width * 0.56)
@@ -68,7 +59,6 @@ def render():
                 title_color=title_color,
                 stats_color=stats_color,
                 title_lines=title_lines,
-                stats=stats,
                 thumbnail=thumbnail,
                 duration=duration,
                 duration_width=duration_width,

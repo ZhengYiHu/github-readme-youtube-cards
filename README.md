@@ -16,10 +16,15 @@
 
 1. Add the following snippet to your markdown file where you want the cards to appear.
 
-```html
 <!-- BEGIN YOUTUBE-CARDS -->
+<a href="https://zyhu.itch.io/feed-the-queen"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Ffeed-the-queen&title=Feed+the+Queen+%5BFree%5D+%5BStrategy%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzE2NjYzNzcyLnBuZw%3D%3D%2F315x250%2523c%2Fdyf6H%252F.png&lang=en&timestamp=1718913955&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Feed the Queen [Free] [Strategy]" title="Feed the Queen [Free] [Strategy]"></a>
+<a href="https://zyhu.itch.io/groovy-ghost"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Fgroovy-ghost&title=Groovy+Ghost+%5BFree%5D+%5BPlatformer%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzE1MzY4MDM2LmdpZg%3D%3D%2F315x250%2523c%2F%252B3cdx4.gif&lang=en&timestamp=1709674005&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Groovy Ghost [Free] [Platformer]" title="Groovy Ghost [Free] [Platformer]"></a>
+<a href="https://zyhu.itch.io/recurse"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Frecurse&title=Re%3ACurse+%5BFree%5D+%5BAction%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzE0OTEzMDk5LnBuZw%3D%3D%2F315x250%2523c%2FXCmCqI.png&lang=en&timestamp=1704493525&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Re:Curse [Free] [Action]" title="Re:Curse [Free] [Action]"></a>
+<a href="https://zyhu.itch.io/duckhub"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Fduckhub&title=Duck+Hub+%5BFree%5D+%5BRole+Playing%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzEzNjg4NjYyLnBuZw%3D%3D%2F315x250%2523c%2FTG1hVB.png&lang=en&timestamp=1697043358&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Duck Hub [Free] [Role Playing]" title="Duck Hub [Free] [Role Playing]"></a>
+<a href="https://zyhu.itch.io/fwogame"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Ffwogame&title=Fwogame+%5BFree%5D+%5BPlatformer%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzEzMzEyMjYwLmdpZg%3D%3D%2F315x250%2523c%2FA3IBd3.gif&lang=en&timestamp=1693757437&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Fwogame [Free] [Platformer]" title="Fwogame [Free] [Platformer]"></a>
+<a href="https://zyhu.itch.io/swing-into-action"><img src="https://zhengyihu.github.io/github-readme-youtube-cards/?id=https%3A%2F%2Fzyhu.itch.io%2Fswing-into-action&title=Swing+into+Action+%5BFree%5D+%5BPlatformer%5D+%5BWindows%5D&image=https%3A%2F%2Fimg.itch.zone%2FaW1nLzcyMjQwOTEuZ2lm%2F315x250%2523c%2Fxb0xek.gif&lang=en&timestamp=1634513034&background_color=%230d1117&title_color=%23ffffff&stats_color=%23dedede&max_title_lines=1&width=250&border_radius=5" alt="Swing into Action [Free] [Platformer] [Windows]" title="Swing into Action [Free] [Platformer] [Windows]"></a>
 <!-- END YOUTUBE-CARDS -->
-```
+
 
 2. In your repo, create a `.github` folder and inside create a folder named `workflows` if it does not exist. Then create a file in your `.github/workflows/` folder and give it a name such as `youtube-cards.yml` with the following contents.
 

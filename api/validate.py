@@ -24,20 +24,6 @@ def validate_color(req: Request, field: str, default: str = "#ffffff") -> str:
     return f"#{hex_digits}"
 
 
-def validate_video_id(req: Request, field: str) -> str:
-    """Validate a video ID, returns the video ID if valid.
-
-    Raises:
-        ValidationError: if the field is not provided or fails the validation regex.
-    """
-    value = req.args.get(field, "")
-    if value == "":
-        raise ValidationError(f"Required parameter '{field}' is missing")
-    if not re.match(r"^[a-zA-Z0-9_-]+$", value):
-        raise ValidationError(f"'{field}' expects a video ID but got '{value}'")
-    return value
-
-
 def validate_string(req: Request, field: str, default: str = "") -> str:
     """Validate a string, returns the string if valid, otherwise the default."""
     return req.args.get(field, default)

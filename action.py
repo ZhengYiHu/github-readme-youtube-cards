@@ -45,56 +45,13 @@ class VideoParser:
         self._output_type = output_type
         self._youtube_data = {}
 
-    @staticmethod
-    def parse_iso8601_duration(duration: str) -> int:
-        """Parse ISO 8601 duration and return the number of seconds
-
-        Arguments:
-            duration (str): The length of the video. The property value is an ISO 8601 duration.
-                For example, for a video that is at least one minute long and less than one hour long,
-                the duration is in the format PT#M#S, in which the letters PT indicate that the value
-                specifies a period of time, and the letters M and S refer to length in minutes and seconds,
-                respectively. The # characters preceding the M and S letters are both integers that
-                specify the number of minutes (or seconds) of the video. For example, a value of
-                PT15M33S indicates that the video is 15 minutes and 33 seconds long.
-
-                If the video is at least one hour long, the duration is in the format PT#H#M#S, in which the
-                # preceding the letter H specifies the length of the video in hours and all of the other
-                details are the same as described above. If the video is at least one day long,
-                the letters P and T are separated, and the value's format is P#DT#H#M#S.
-        """
-        pattern = re.compile(
-            r"P"
-            r"(?:(?P<years>\d+)Y)?"
-            r"(?:(?P<months>\d+)M)?"
-            r"(?:(?P<days>\d+)D)?"
-            r"(?:T"
-            r"(?:(?P<hours>\d+)H)?"
-            r"(?:(?P<minutes>\d+)M)?"
-            r"(?:(?P<seconds>\d+)S)?"
-            r")?",
-        )
-        match = re.match(pattern, duration)
-        if not match:
-            return 0
-        data = match.groupdict()
-        return (
-            int(data["years"] or 0) * 365 * 24 * 60 * 60
-            + int(data["months"] or 0) * 30 * 24 * 60 * 60
-            + int(data["days"] or 0) * 24 * 60 * 60
-            + int(data["hours"] or 0) * 60 * 60
-            + int(data["minutes"] or 0) * 60
-            + int(data["seconds"] or 0)
-        )
-
-    def get_youtube_data(self, *videos: Dict[str, Any]) -> Dict[str, Any]:
-        """Fetch video data from the youtube API"""
+    def get_youtube_data(self, *games: Dict[str, Any]) -> Dict[str, Any]:
         if not self._youtube_api_key:
             return {}
-        video_ids = [video["yt_videoid"] for video in videos]
+        game_ids = [game["id"] for game in games]
         params = {
             "part": "contentDetails",
-            "id": ",".join(video_ids),
+            "id": ",".join(game_ids),
             "key": self._youtube_api_key,
             "alt": "json",
         }
@@ -106,14 +63,15 @@ class VideoParser:
             data = json.loads(response.read())
         return {video["id"]: video for video in data["items"]}
 
-    def parse_video(self, video: Dict[str, Any]) -> str:
+    def parse_video(self, game: Dict[str, Any]) -> str:
         """Parse video entry and return the contents for the readme"""
-        video_id = video["yt_videoid"]
+        game_id = game["id"]
         params = {
-            "id": video_id,
-            "title": video["title"],
+            "id": game_id,
+            "title": game["title"],
+            "image": game["imageurl"],
             "lang": self._lang,
-            "timestamp": int(time.mktime(video["published_parsed"])),
+            "timestamp": int(time.mktime(game["published_parsed"])),
             "background_color": self._background_color,
             "title_color": self._title_color,
             "stats_color": self._stats_color,
@@ -121,11 +79,7 @@ class VideoParser:
             "width": self._card_width,
             "border_radius": self._border_radius,
         }
-        if video_id in self._youtube_data:
-            content_details = self._youtube_data[video_id]["contentDetails"]
-            if self._show_duration:
-                params["duration"] = self.parse_iso8601_duration(content_details["duration"])
-
+        
         dark_params = params | self._theme_context_dark
         light_params = params | self._theme_context_light
 
@@ -134,28 +88,29 @@ class VideoParser:
             html_escaped_title = params["title"].replace('"', "&quot;")
             if self._theme_context_dark or self._theme_context_light:
                 return (
-                    f'<a href="{video["link"]}">\n'
+                    f'<a href="{game["link"]}">\n'
                     "  <picture>\n"
                     f'    <source media="(prefers-color-scheme: dark)" srcset="{self._base_url}?{urllib.parse.urlencode(dark_params)}">\n'
                     f'    <img src="{self._base_url}?{urllib.parse.urlencode(light_params)}" alt="{html_escaped_title}" title="{html_escaped_title}">\n'
                     "  </picture>\n"
                     "</a>"
                 )
-            return f'<a href="{video["link"]}"><img src="{self._base_url}?{urllib.parse.urlencode(params)}" alt="{html_escaped_title}" title="{html_escaped_title}"></a>'
+            return f'<a href="{game["link"]}"><img src="{self._base_url}?{urllib.parse.urlencode(params)}" alt="{html_escaped_title}" title="{html_escaped_title}"></a>'
         else:
             # translate video to standard markdown
             backslash_escaped_title = params["title"].replace('"', '\\"')
             # if theme context is set, create two versions with theme context specified
             if self._theme_context_dark or self._theme_context_light:
                 return (
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)} "{backslash_escaped_title}")]({video["link"]}#gh-dark-mode-only)'
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)} "{backslash_escaped_title}")]({video["link"]}#gh-light-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)} "{backslash_escaped_title}")]({game["link"]}#gh-dark-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)} "{backslash_escaped_title}")]({game["link"]}#gh-light-mode-only)'
                 )
-            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({video["link"]})'
+            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["link"]})'
 
+       
     def parse_videos(self) -> str:
         """Parse video feed and return the contents for the readme"""
-        url = f"https://www.youtube.com/feeds/videos.xml?channel_id={self._channel_id}"
+        url = f"https://itch.io/games/newest/by-{self._channel_id}.xml"
         feed = feedparser.parse(url)
         videos = feed["entries"][: self._max_videos]
         self._youtube_data = self.get_youtube_data(*videos)
@@ -181,8 +136,7 @@ class FileUpdater:
             readme_file.write(readme)
 
 
-if __name__ == "__main__":
-    parser = ArgumentParser()
+if __name__ == "__main__":parser = ArgumentParser()
     parser.add_argument(
         "--channel",
         dest="channel_id",
@@ -212,7 +166,7 @@ if __name__ == "__main__":
         "--base-url",
         dest="base_url",
         help="Base URL for the readme",
-        default="https://ytcards.demolab.com/",
+        default="https://zhengyihu.github.io/github-readme-youtube-cards/",
     )
     parser.add_argument(
         "--card-width",
@@ -320,12 +274,7 @@ if __name__ == "__main__":
         show_duration=args.show_duration == "true",
         output_type=args.output_type,
     )
-
     video_content = video_parser.parse_videos()
 
-    # output to stdout
-    print("Stout_Output: " + video_content)
-
     # update the readme file
-    if args.output_only == "false":
-        FileUpdater.update(args.readme_path, args.comment_tag_name, video_content)
+    FileUpdater.update("README.md", "YOUTUBE-CARDS", video_content)

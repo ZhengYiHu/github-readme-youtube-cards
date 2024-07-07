@@ -14,33 +14,10 @@ i18n.set("filename_format", "{locale}.{format}")
 i18n.set("enable_memoization", True)
 i18n.load_path.append("./api/locale")
 
-
-def format_relative_time(timestamp: float, lang: str = "en") -> str:
-    """Get relative time from unix timestamp (ex. "3 hours ago")"""
-    delta = timedelta(seconds=timestamp - datetime.now().timestamp())
-    return format_timedelta(delta=delta, add_direction=True, locale=lang)
-
-
 def data_uri_from_bytes(*, data: bytes, mime_type: str) -> str:
     """Return a base-64 data URI for bytes"""
     base64 = codecs.encode(data, "base64").decode("utf-8").replace("\n", "")
     return f"data:{mime_type};base64,{base64}"
-
-
-def data_uri_from_url(url: str, *, mime_type: Optional[str] = None) -> str:
-    """Return base-64 data URI for an image at a given URL.
-    If not passed, the content type is determined from the response header
-    if present, otherwise, jpeg is assumed.
-
-    Raises:
-        HTTPError: If the request fails
-    """
-    with urlopen(url) as response:
-        data = response.read()
-    mime_type = mime_type or response.headers["Content-Type"] or "image/jpeg"
-    assert mime_type is not None
-    return data_uri_from_bytes(data=data, mime_type=mime_type)
-
 
 def data_uri_from_file(path: str, *, mime_type: Optional[str] = None) -> str:
     """Return base-64 data URI for an image at a given file path.
@@ -90,19 +67,6 @@ def format_views_value(value: str, lang: str = "en") -> str:
         return i18n.t("view", locale=lang)
     formatted_value = format_compact_decimal(int_value, locale=lang, fraction_digits=1)
     return i18n.t("views", number=formatted_value, locale=lang)
-
-
-def fetch_views(video_id: str, lang: str = "en") -> str:
-    """Get number of views for a YouTube video as a formatted metric"""
-    try:
-        req = Request(f"https://img.shields.io/youtube/views/{video_id}.json")
-        req.add_header("User-Agent", "GitHub Readme YouTube Cards")
-        with urlopen(req) as response:
-            value = orjson.loads(response.read()).get("value", "")
-            return format_views_value(value, lang)
-    except Exception:
-        return ""
-
 
 def seconds_to_duration(seconds: int) -> str:
     """Convert seconds to a formatted duration (ex. "1:23")"""

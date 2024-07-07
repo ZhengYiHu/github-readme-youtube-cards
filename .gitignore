@@ -131,3 +131,4 @@ dmypy.json
 
 # Vercel Hosting
 .vercel
+.DS_Store
