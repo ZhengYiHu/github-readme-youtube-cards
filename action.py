@@ -136,7 +136,8 @@ class FileUpdater:
             readme_file.write(readme)
 
 
-if __name__ == "__main__":parser = ArgumentParser()
+if __name__ == "__main__":
+    parser = ArgumentParser()
     parser.add_argument(
         "--channel",
         dest="channel_id",
