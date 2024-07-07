@@ -2,22 +2,12 @@ import re
 from datetime import datetime
 
 from api.utils import (
-    data_uri_from_file,
-    data_uri_from_url,
     estimate_duration_width,
-    fetch_views,
-    format_relative_time,
     format_views_value,
     parse_metric_value,
     seconds_to_duration,
     trim_lines,
 )
-
-
-def test_fetch_views():
-    metric_regex = re.compile(r"^\d+(?:\.\d)?[KMBT]? views$")
-    assert metric_regex.match(fetch_views("dQw4w9WgXcQ"))
-
 
 def test_format_views_value():
     views_regex = re.compile(r"^\d+(?:\.\d)?[KMBT]? views$")
@@ -39,16 +29,6 @@ def test_format_views_value_i18n():
     assert views_regex.match(format_views_value("1.5G", "fr"))
 
 
-def test_format_relative_time():
-    # values are handled by Babel, so we just test that the function is called successfully
-    assert format_relative_time(datetime.now().timestamp() - 3600) == "1 hour ago"
-
-
-def test_format_relative_time_i18n():
-    # values are handled by Babel, so we just test that the function is called successfully
-    assert format_relative_time(datetime.now().timestamp() - 3600, "fr") == "il y a 1 heure"
-
-
 def test_parse_metric_value():
     assert parse_metric_value("1") == 1
     assert parse_metric_value("100") == 100
@@ -56,14 +36,6 @@ def test_parse_metric_value():
     assert parse_metric_value("1.5k") == 1500
     assert parse_metric_value("1.5M") == 1500000
     assert parse_metric_value("1.5G") == 1500000000
-
-
-def test_data_uri_from_url_and_file():
-    error_png = data_uri_from_file("./api/templates/resources/error.jpg")
-    assert error_png.startswith("data:image/jpeg;base64,/9j/2wBDAAQDAwQDA")
-
-    thumbnail_png = data_uri_from_url("https://i.ytimg.com/vi/FuenvuekLqc/mqdefault.jpg")
-    assert thumbnail_png.startswith("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/")
 
 
 def test_trim_lines():

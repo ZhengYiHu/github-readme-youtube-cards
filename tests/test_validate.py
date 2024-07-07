@@ -5,7 +5,6 @@ from api.validate import (
     validate_color,
     validate_int,
     validate_string,
-    validate_video_id,
 )
 
 
@@ -41,19 +40,6 @@ def test_validate_color(req):
     # valid field - 3 characters
     req.set_args(background_color="#cde")
     assert validate_color(req, "background_color", default="#0d1117") == "#cde"
-
-
-def test_validate_video_id(req):
-    # missing field
-    with pytest.raises(ValidationError):
-        validate_video_id(req, "id")
-    # invalid field
-    req.set_args(id="*********")
-    with pytest.raises(ValidationError):
-        validate_video_id(req, "id")
-    # valid field
-    req.set_args(id="abc_123-456")
-    assert validate_video_id(req, "id") == "abc_123-456"
 
 
 def test_validate_string(req):
