@@ -3,9 +3,6 @@ import re
 from babel import Locale, UnknownLocaleError
 from flask.wrappers import Request
 
-from .exceptions import ValidationError
-
-
 def validate_int(req: Request, field: str, default: int = 0) -> int:
     """Validate an integer, returns the integer if valid, otherwise the default."""
     value = req.args.get(field, "")
