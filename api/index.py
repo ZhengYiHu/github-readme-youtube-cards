@@ -100,6 +100,7 @@ def add_header(r):
 
 def get_thumbnail(request):
     url = f"https://itch.io/api/1/{request.args['api_key']}/game/{request.args['id']}"
+    print(url)
     req = urllib.request.Request(url)
     req.add_header("Accept", "application/json")
     req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
