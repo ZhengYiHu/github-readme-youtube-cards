@@ -39,10 +39,3 @@ repos:
       - id: autoflake
         name: Remove unused imports with autoflake.
         args: ["--in-place", "--remove-all-unused-imports"]
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v4.0.0-alpha.8
-    hooks:
-      - id: prettier
-        name: Running prettier in non-python files.
-        types_or: [markdown, yaml, css, json, javascript]
