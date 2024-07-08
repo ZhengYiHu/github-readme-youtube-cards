@@ -67,7 +67,6 @@ class VideoParser:
             "border_radius": self._border_radius,
             "api_key": self._youtube_api_key,
         }
-        print(f"https://itch.io/api/1/{params['api_key']}/game/{params['id']}")
         dark_params = params | self._theme_context_dark
         light_params = params | self._theme_context_light
 
@@ -85,15 +84,13 @@ class VideoParser:
                 )
             return f'<a href="{game["url"]}"><img src="{self._base_url}?{urllib.parse.urlencode(params)}" alt="{html_escaped_title}" title="{html_escaped_title}"></a>'
         else:
-            # translate video to standard markdown
-            backslash_escaped_title = params["title"].replace('"', '\\"')
             # if theme context is set, create two versions with theme context specified
             if self._theme_context_dark or self._theme_context_light:
                 return (
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)} "{backslash_escaped_title}")]({game["url"]}#gh-dark-mode-only)'
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)} "{backslash_escaped_title}")]({game["url"]}#gh-light-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)})]({game["url"]}#gh-dark-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)})]({game["url"]}#gh-light-mode-only)'
                 )
-            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["url"]})'
+            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)})]({game["url"]})'
 
     def parse_games(self) -> str:
         """Parse video feed and return the contents for the readme"""
