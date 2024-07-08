@@ -6,7 +6,6 @@ from typing import Optional
 from urllib.request import Request, urlopen
 
 import i18n
-import orjson
 from babel.dates import format_timedelta
 from babel.numbers import format_compact_decimal
 
