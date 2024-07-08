@@ -1,10 +1,10 @@
 from datetime import datetime
+import json
 from time import gmtime, strftime
 import urllib.parse
 import urllib.request
 from flask import Flask, render_template, request
 from flask.wrappers import Response
-import json
 
 from .utils import (
     data_uri_from_file,

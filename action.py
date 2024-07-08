@@ -4,9 +4,6 @@ import urllib.request
 from argparse import ArgumentParser
 from typing import Any, Dict, Optional
 
-import feedparser
-
-
 class VideoParser:
     def __init__(
         self,
