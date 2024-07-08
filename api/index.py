@@ -12,8 +12,7 @@ from .utils import (
     is_rtl,
     is_rtl_title,
     seconds_to_duration,
-    trim_lines,
-    data_uri_from_url
+    trim_lines
 )
 from .validate import (
     validate_color,
@@ -108,5 +107,4 @@ def get_thumbnail(request):
     req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
     with urllib.request.urlopen(req) as response:
         data = json.loads(response.read())
-        print(data)
     return data["game"]["cover_url"]
