@@ -34,7 +34,6 @@ pyright = { cmd = "pyright", help = "Run pyright" }
 typeCheckingMode = "basic"
 include = [
     "api",
-    "tests",
     "*.py",
 ]
 pythonVersion = "3.11"

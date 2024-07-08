@@ -9,7 +9,6 @@ on:
       - main
     paths:
       - "api/**"
-      - "tests/**"
       - "**.py"
       - "**.toml"
       - "requirements*.txt"
