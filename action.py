@@ -67,6 +67,7 @@ class VideoParser:
             "border_radius": self._border_radius,
             "api_key": self._youtube_api_key,
         }
+        print(f"https://itch.io/api/1/{params['api_key']}/game/{params['id']}")
         dark_params = params | self._theme_context_dark
         light_params = params | self._theme_context_light
 

@@ -40,7 +40,6 @@ def render():
         duration_seconds = validate_int(request, "duration", default=0)
         lang = validate_lang(request, "lang", default="en")
         thumbnail = get_thumbnail(request)
-        print("tbn: ", thumbnail)
         duration = seconds_to_duration(duration_seconds)
         duration_width = estimate_duration_width(duration)
         thumbnail_height = round(width * 0.56)
@@ -100,11 +99,9 @@ def add_header(r):
 
 def get_thumbnail(request):
     url = f"https://itch.io/api/1/{request.args['api_key']}/game/{request.args['id']}"
-    print(url)
     req = urllib.request.Request(url)
     req.add_header("Accept", "application/json")
     req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
     with urllib.request.urlopen(req) as response:
         data = json.loads(response.read())
-        print("data ", data)
     return data["game"]["cover_url"]
