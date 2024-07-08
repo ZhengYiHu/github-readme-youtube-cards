@@ -19,6 +19,25 @@ def data_uri_from_bytes(*, data: bytes, mime_type: str) -> str:
     base64 = codecs.encode(data, "base64").decode("utf-8").replace("\n", "")
     return f"data:{mime_type};base64,{base64}"
 
+def data_uri_from_url(url: str, *, mime_type: Optional[str] = None) -> str:
+    """Return base-64 data URI for an image at a given URL.
+    If not passed, the content type is determined from the response header
+    if present, otherwise, jpeg is assumed.
+
+    Raises:
+        HTTPError: If the request fails
+    """
+    try:
+        with urlopen(url) as response:
+            data = response.read()
+    except Exception as e:
+        print(f"Error fetching URL '{url}': {e}")
+        raise
+    
+    mime_type = mime_type or response.headers["Content-Type"] or "image/jpg"
+    assert mime_type is not None
+    return data_uri_from_bytes(data=data, mime_type=mime_type)
+
 def data_uri_from_file(path: str, *, mime_type: Optional[str] = None) -> str:
     """Return base-64 data URI for an image at a given file path.
     If not passed, the content type is determined from the file extension

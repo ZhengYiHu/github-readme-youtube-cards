@@ -43,25 +43,18 @@ class VideoParser:
         self._youtube_api_key = youtube_api_key
         self._show_duration = show_duration
         self._output_type = output_type
-        self._youtube_data = {}
+        self.itch_data = {}
 
-    def get_youtube_data(self, *games: Dict[str, Any]) -> Dict[str, Any]:
+    def get_itch_data(self) -> Dict[str, Any]:
         if not self._youtube_api_key:
             return {}
-        game_ids = [game["id"] for game in games]
-        params = {
-            "part": "contentDetails",
-            "id": ",".join(game_ids),
-            "key": self._youtube_api_key,
-            "alt": "json",
-        }
-        url = f"https://youtube.googleapis.com/youtube/v3/videos?{urllib.parse.urlencode(params)}"
+        url = f"https://itch.io/api/1/{self._youtube_api_key}/my-games"
         req = urllib.request.Request(url)
         req.add_header("Accept", "application/json")
         req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read())
-        return {video["id"]: video for video in data["items"]}
+        return {video["id"]: video for video in data["games"]}
 
     def parse_video(self, game: Dict[str, Any]) -> str:
         """Parse video entry and return the contents for the readme"""
@@ -69,17 +62,15 @@ class VideoParser:
         params = {
             "id": game_id,
             "title": game["title"],
-            "image": game["imageurl"],
             "lang": self._lang,
-            "timestamp": int(time.mktime(game["published_parsed"])),
             "background_color": self._background_color,
             "title_color": self._title_color,
             "stats_color": self._stats_color,
             "max_title_lines": self._max_title_lines,
             "width": self._card_width,
             "border_radius": self._border_radius,
+            "api_key": self._youtube_api_key,
         }
-        
         dark_params = params | self._theme_context_dark
         light_params = params | self._theme_context_light
 
@@ -88,33 +79,32 @@ class VideoParser:
             html_escaped_title = params["title"].replace('"', "&quot;")
             if self._theme_context_dark or self._theme_context_light:
                 return (
-                    f'<a href="{game["link"]}">\n'
+                    f'<a href="{game["url"]}">\n'
                     "  <picture>\n"
                     f'    <source media="(prefers-color-scheme: dark)" srcset="{self._base_url}?{urllib.parse.urlencode(dark_params)}">\n'
                     f'    <img src="{self._base_url}?{urllib.parse.urlencode(light_params)}" alt="{html_escaped_title}" title="{html_escaped_title}">\n'
                     "  </picture>\n"
                     "</a>"
                 )
-            return f'<a href="{game["link"]}"><img src="{self._base_url}?{urllib.parse.urlencode(params)}" alt="{html_escaped_title}" title="{html_escaped_title}"></a>'
+            return f'<a href="{game["url"]}"><img src="{self._base_url}?{urllib.parse.urlencode(params)}" alt="{html_escaped_title}" title="{html_escaped_title}"></a>'
         else:
             # translate video to standard markdown
             backslash_escaped_title = params["title"].replace('"', '\\"')
             # if theme context is set, create two versions with theme context specified
             if self._theme_context_dark or self._theme_context_light:
                 return (
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)} "{backslash_escaped_title}")]({game["link"]}#gh-dark-mode-only)'
-                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)} "{backslash_escaped_title}")]({game["link"]}#gh-light-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(dark_params)} "{backslash_escaped_title}")]({game["url"]}#gh-dark-mode-only)'
+                    f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(light_params)} "{backslash_escaped_title}")]({game["url"]}#gh-light-mode-only)'
                 )
-            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["link"]})'
+            return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["url"]})'
 
        
-    def parse_videos(self) -> str:
+    def parse_games(self) -> str:
+        print("parsing")
         """Parse video feed and return the contents for the readme"""
-        url = f"https://itch.io/games/newest/by-{self._channel_id}.xml"
-        feed = feedparser.parse(url)
-        videos = feed["entries"][: self._max_videos]
-        self._youtube_data = self.get_youtube_data(*videos)
-        return "\n".join(map(self.parse_video, videos))
+        self.itch_data = self.get_itch_data()
+        games = list(self.itch_data.values())
+        return "\n".join(map(self.parse_video, games))
 
 
 class FileUpdater:
@@ -275,7 +265,5 @@ if __name__ == "__main__":
         show_duration=args.show_duration == "true",
         output_type=args.output_type,
     )
-    video_content = video_parser.parse_videos()
-
-    # update the readme file
+    video_content = video_parser.parse_games()
     FileUpdater.update("README.md", "YOUTUBE-CARDS", video_content)

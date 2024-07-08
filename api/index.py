@@ -1,8 +1,10 @@
 from datetime import datetime
 from time import gmtime, strftime
-
+import urllib.parse
+import urllib.request
 from flask import Flask, render_template, request
 from flask.wrappers import Response
+import json
 
 from .utils import (
     data_uri_from_file,
@@ -11,6 +13,7 @@ from .utils import (
     is_rtl_title,
     seconds_to_duration,
     trim_lines,
+    data_uri_from_url
 )
 from .validate import (
     validate_color,
@@ -41,7 +44,7 @@ def render():
         title_lines = trim_lines(title, (width - 20) // 8, max_title_lines)
         duration_seconds = validate_int(request, "duration", default=0)
         lang = validate_lang(request, "lang", default="en")
-        thumbnail = request.args.get("image")
+        thumbnail = get_thumbnail(request)
         duration = seconds_to_duration(duration_seconds)
         duration_width = estimate_duration_width(duration)
         thumbnail_height = round(width * 0.56)
@@ -97,3 +100,13 @@ def add_header(r):
     r.headers["Last-Modified"] = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
     r.headers["Cache-Control"] = "public, max-age=3600"
     return r
+
+def get_thumbnail(request):
+    url = f"https://itch.io/api/1/{request.args['api_key']}/game/{request.args['id']}"
+    req = urllib.request.Request(url)
+    req.add_header("Accept", "application/json")
+    req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
+    with urllib.request.urlopen(req) as response:
+        data = json.loads(response.read())
+        print(data)
+    return data["game"]["cover_url"]
