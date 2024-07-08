@@ -262,3 +262,4 @@ if __name__ == "__main__":
     )
     video_content = video_parser.parse_games()
     FileUpdater.update("README.md", "YOUTUBE-CARDS", video_content)
+    

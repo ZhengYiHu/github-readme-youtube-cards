@@ -1,10 +1,10 @@
-from datetime import datetime
 import json
-from time import gmtime, strftime
 import urllib.parse
 import urllib.request
 from flask import Flask, render_template, request
 from flask.wrappers import Response
+from datetime import datetime
+from time import gmtime, strftime
 
 from .utils import (
     data_uri_from_file,
@@ -12,14 +12,9 @@ from .utils import (
     is_rtl,
     is_rtl_title,
     seconds_to_duration,
-    trim_lines
+    trim_lines,
 )
-from .validate import (
-    validate_color,
-    validate_int,
-    validate_lang,
-    validate_string,
-)
+from .validate import validate_color, validate_int, validate_lang, validate_string
 
 app = Flask(__name__)
 
