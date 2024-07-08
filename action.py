@@ -95,7 +95,6 @@ class VideoParser:
             return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["url"]})'
 
     def parse_games(self) -> str:
-        print("parsing")
         """Parse video feed and return the contents for the readme"""
         self.itch_data = self.get_itch_data()
         games = list(self.itch_data.values())
@@ -243,6 +242,7 @@ if __name__ == "__main__":
     if args.show_duration == "true" and not args.youtube_api_key:
         parser.error("--youtube-api-key is required when --show-duration is true")
 
+    print(args.youtube_api_key)
     video_parser = VideoParser(
         base_url=args.base_url,
         channel_id=args.channel_id,
@@ -261,4 +261,5 @@ if __name__ == "__main__":
         output_type=args.output_type,
     )
     video_content = video_parser.parse_games()
+    print(video_content)
     FileUpdater.update("README.md", "YOUTUBE-CARDS", video_content)
