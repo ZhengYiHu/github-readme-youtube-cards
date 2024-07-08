@@ -11,10 +11,12 @@ i18n.set("filename_format", "{locale}.{format}")
 i18n.set("enable_memoization", True)
 i18n.load_path.append("./api/locale")
 
+
 def data_uri_from_bytes(*, data: bytes, mime_type: str) -> str:
     """Return a base-64 data URI for bytes"""
     base64 = codecs.encode(data, "base64").decode("utf-8").replace("\n", "")
     return f"data:{mime_type};base64,{base64}"
+
 
 def data_uri_from_url(url: str, *, mime_type: Optional[str] = None) -> str:
     """Return base-64 data URI for an image at a given URL.
@@ -30,10 +32,11 @@ def data_uri_from_url(url: str, *, mime_type: Optional[str] = None) -> str:
     except Exception as e:
         print(f"Error fetching URL '{url}': {e}")
         raise
-    
+
     mime_type = mime_type or response.headers["Content-Type"] or "image/jpg"
     assert mime_type is not None
     return data_uri_from_bytes(data=data, mime_type=mime_type)
+
 
 def data_uri_from_file(path: str, *, mime_type: Optional[str] = None) -> str:
     """Return base-64 data URI for an image at a given file path.
@@ -83,6 +86,7 @@ def format_views_value(value: str, lang: str = "en") -> str:
         return i18n.t("view", locale=lang)
     formatted_value = format_compact_decimal(int_value, locale=lang, fraction_digits=1)
     return i18n.t("views", number=formatted_value, locale=lang)
+
 
 def seconds_to_duration(seconds: int) -> str:
     """Convert seconds to a formatted duration (ex. "1:23")"""

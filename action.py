@@ -4,6 +4,7 @@ import urllib.request
 from argparse import ArgumentParser
 from typing import Any, Dict, Optional
 
+
 class VideoParser:
     def __init__(
         self,
@@ -93,7 +94,6 @@ class VideoParser:
                 )
             return f'[![{params["title"]}]({self._base_url}?{urllib.parse.urlencode(params)} "{backslash_escaped_title}")]({game["url"]})'
 
-       
     def parse_games(self) -> str:
         print("parsing")
         """Parse video feed and return the contents for the readme"""
@@ -262,4 +262,3 @@ if __name__ == "__main__":
     )
     video_content = video_parser.parse_games()
     FileUpdater.update("README.md", "YOUTUBE-CARDS", video_content)
-    

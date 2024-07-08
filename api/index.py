@@ -1,10 +1,11 @@
 import json
 import urllib.parse
 import urllib.request
-from flask import Flask, render_template, request
-from flask.wrappers import Response
 from datetime import datetime
 from time import gmtime, strftime
+
+from flask import Flask, render_template, request
+from flask.wrappers import Response
 
 from .utils import (
     data_uri_from_file,
@@ -94,6 +95,7 @@ def add_header(r):
     r.headers["Last-Modified"] = strftime("%a, %d %b %Y %H:%M:%S GMT", gmtime())
     r.headers["Cache-Control"] = "public, max-age=3600"
     return r
+
 
 def get_thumbnail(request):
     url = f"https://itch.io/api/1/{request.args['api_key']}/game/{request.args['id']}"
