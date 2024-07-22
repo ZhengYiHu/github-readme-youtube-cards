@@ -149,7 +149,7 @@ if __name__ == "__main__":
         "--base-url",
         dest="base_url",
         help="Base URL for the readme",
-        default="https://zhengyihu.github.io/github-readme-youtube-cards/",
+        default="https://zyhu.pythonanywhere.com/",
     )
     parser.add_argument(
         "--card-width",
@@ -239,7 +239,6 @@ if __name__ == "__main__":
 
     if args.show_duration == "true" and not args.youtube_api_key:
         parser.error("--youtube-api-key is required when --show-duration is true")
-
     video_parser = VideoParser(
         base_url=args.base_url,
         channel_id=args.channel_id,
