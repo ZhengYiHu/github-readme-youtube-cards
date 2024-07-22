@@ -8,6 +8,7 @@ from flask import Flask, render_template, request
 from flask.wrappers import Response
 
 from .utils import (
+    data_uri_from_url,
     data_uri_from_file,
     estimate_duration_width,
     is_rtl,
@@ -105,4 +106,4 @@ def get_thumbnail(request):
     req.add_header("User-Agent", "GitHub Readme YouTube Cards GitHub Action")
     with urllib.request.urlopen(req) as response:
         data = json.loads(response.read())
-    return data["game"]["cover_url"]
+    return data_uri_from_url(data["game"]["cover_url"])
